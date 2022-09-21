@@ -3,7 +3,9 @@ parser grammar AntlrEntityParser;
 options { tokenVocab=AntlrEntityLexer; }
 
 module
-    : entities+=entity* EOF
+    : MODULE name=ID LCRLY
+        entities+=entity*
+    RCRLY
     ;
 
 entity
@@ -13,6 +15,12 @@ entity
     ;
 
 feature
-    : name=ID COLON SEMI
+    : name=ID COLON type=type_spec SEMI
     ;
 
+type_spec
+    : INTEGER   #integer_type
+    | BOOLEAN   #boolean_type
+    | STRING    #string_type
+    | target=ID #entity_type
+    ;

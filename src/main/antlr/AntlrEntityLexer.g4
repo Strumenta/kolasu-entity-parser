@@ -11,6 +11,7 @@ STRING: 'string';
 
 // keywords
 ENTITY: 'entity';
+MODULE: 'module';
 
 // symbols
 COLON: ':';
@@ -22,3 +23,6 @@ RCRLY: '}';
 
 // identifier
 ID: [A-Z]+;
+
+// whitespaces
+WS: [ \r\n\t]+ -> channel(HIDDEN);
