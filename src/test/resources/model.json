@@ -1,0 +1,16 @@
+{
+  "eClass" : "https://strumenta.com/kolasu/v2#//Result",
+  "root" : {
+    "eClass" : "#//Module",
+    "name" : "ExampleModule",
+    "entities" : [ {
+      "name" : "ExampleEntity",
+      "features" : [ {
+        "name" : "name",
+        "type" : {
+          "eClass" : "#//StringType"
+        }
+      } ]
+    } ]
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "#type": "com.strumenta.entity.parser.Module",
+  "#position": {
+    "description": "Position(start\u003dLine 1, Column 0, end\u003dLine 9, Column 1)",
+    "start": {
+      "line": 1,
+      "column": 0
+    },
+    "end": {
+      "line": 9,
+      "column": 1
+    }
+  },
+  "entities": [
+    {
+      "#type": "com.strumenta.entity.parser.Entity",
+      "#position": {
+        "description": "Position(start\u003dLine 2, Column 4, end\u003dLine 5, Column 5)",
+        "start": {
+          "line": 2,
+          "column": 4
+        },
+        "end": {
+          "line": 5,
+          "column": 5
+        }
+      },
+      "features": [
+        {
+          "#type": "com.strumenta.entity.parser.Feature",
+          "#position": {
+            "description": "Position(start\u003dLine 3, Column 8, end\u003dLine 3, Column 21)",
+            "start": {
+              "line": 3,
+              "column": 8
+            },
+            "end": {
+              "line": 3,
+              "column": 21
+            }
+          },
+          "name": "name",
+          "type": {
+            "#type": "com.strumenta.entity.parser.StringType",
+            "#position": {
+              "description": "Position(start\u003dLine 3, Column 14, end\u003dLine 3, Column 20)",
+              "start": {
+                "line": 3,
+                "column": 14
+              },
+              "end": {
+                "line": 3,
+                "column": 20
+              }
+            }
+          }
+        },
+        {
+          "#type": "com.strumenta.entity.parser.Feature",
+          "#position": {
+            "description": "Position(start\u003dLine 4, Column 8, end\u003dLine 4, Column 29)",
+            "start": {
+              "line": 4,
+              "column": 8
+            },
+            "end": {
+              "line": 4,
+              "column": 29
+            }
+          },
+          "name": "second",
+          "type": {
+            "#type": "com.strumenta.entity.parser.EntityRefType",
+            "#position": {
+              "description": "Position(start\u003dLine 4, Column 16, end\u003dLine 4, Column 28)",
+              "start": {
+                "line": 4,
+                "column": 16
+              },
+              "end": {
+                "line": 4,
+                "column": 28
+              }
+            },
+            "target": {
+              "name": "SecondEntity",
+              "referred": "0"
+            }
+          }
+        }
+      ],
+      "name": "FirstEntity"
+    },
+    {
+      "#type": "com.strumenta.entity.parser.Entity",
+      "#position": {
+        "description": "Position(start\u003dLine 6, Column 4, end\u003dLine 8, Column 5)",
+        "start": {
+          "line": 6,
+          "column": 4
+        },
+        "end": {
+          "line": 8,
+          "column": 5
+        }
+      },
+      "#id": "0",
+      "features": [
+        {
+          "#type": "com.strumenta.entity.parser.Feature",
+          "#position": {
+            "description": "Position(start\u003dLine 7, Column 8, end\u003dLine 7, Column 21)",
+            "start": {
+              "line": 7,
+              "column": 8
+            },
+            "end": {
+              "line": 7,
+              "column": 21
+            }
+          },
+          "name": "name",
+          "type": {
+            "#type": "com.strumenta.entity.parser.StringType",
+            "#position": {
+              "description": "Position(start\u003dLine 7, Column 14, end\u003dLine 7, Column 20)",
+              "start": {
+                "line": 7,
+                "column": 14
+              },
+              "end": {
+                "line": 7,
+                "column": 20
+              }
+            }
+          }
+        }
+      ],
+      "name": "SecondEntity"
+    }
+  ],
+  "name": "Demo"
+}

@@ -14,17 +14,14 @@ class EntityParser : EMFEnabledParser<Node, AntlrEntityParser, AntlrEntityParser
 
     override fun createANTLRParser(tokenStream: TokenStream): AntlrEntityParser = AntlrEntityParser(tokenStream)
 
-    // mostrare supporto emf (come possiamo esportare metamodello e serializzare modelli)
     override fun doGenerateMetamodel(resource: Resource) = EntityMetamodelBuilder(resource).generate().let { }
 
-    // ptree -> ast
     override fun parseTreeToAst(
         parseTreeRoot: AntlrEntityParser.ModuleContext,
         considerPosition: Boolean,
         issues: MutableList<Issue>
     ): Node? = EntityParseTreeToAstTransformer(issues).transform(parseTreeRoot)
 
-    // step aggiuntivi
     override fun postProcessAst(ast: Node, issues: MutableList<Issue>): Node =
         super.postProcessAst(ast, issues).let { this.resolveSymbols(it, issues) }
 

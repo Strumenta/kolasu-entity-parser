@@ -19,6 +19,7 @@ sourceCompatibility = jvmVersion
 repositories {
     mavenLocal()
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -29,12 +30,13 @@ dependencies {
     implementation "com.strumenta.kolasu:kolasu-core:$kolasuVersion"
     implementation "com.strumenta.kolasu:kolasu-emf:$kolasuVersion"
     implementation 'commons-io:commons-io:2.11.0'
-    implementation 'org.slf4j:slf4j-api:2.0.0'
+    implementation 'org.slf4j:slf4j-api:2.0.1'
     implementation 'org.slf4j:slf4j-simple:2.0.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
     testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlinVersion"
+    implementation "com.andreapivetta.kolor:kolor:1.0.0"
 }
 
 sourceSets.main.java.srcDirs += 'build/generated-src/antlr/main'
@@ -91,6 +93,12 @@ ktlint {
     outputToConsole = true
     enableExperimentalRules = true
     disabledRules = ["no-wildcard-imports", "experimental:argument-list-wrapping"]
+}
+
+test {
+    testLogging {
+        showStandardStreams = true
+    }
 }
 
 publishing {

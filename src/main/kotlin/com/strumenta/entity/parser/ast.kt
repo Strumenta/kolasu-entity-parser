@@ -4,10 +4,6 @@ import com.strumenta.kolasu.model.Node
 import com.strumenta.kolasu.model.PossiblyNamed
 import com.strumenta.kolasu.model.ReferenceByName
 
-// ogni nodo ha una sua posizione, non occorre implementare questa logica a mano
-// ogni nodo tiene traccia della sua origin, e.g. parse tree
-// sono a disposizione metodi per navigare e manipolare AST semplicemente estendendo Node
-
 data class Module(
     override val name: String? = null,
     var entities: List<Entity> = listOf()
