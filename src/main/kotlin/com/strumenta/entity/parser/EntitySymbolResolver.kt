@@ -2,6 +2,7 @@ package com.strumenta.entity.parser
 
 import com.strumenta.kolasu.model.Node
 import com.strumenta.kolasu.model.Origin
+import com.strumenta.kolasu.model.tryToResolve
 import com.strumenta.kolasu.transformation.ASTTransformer
 import com.strumenta.kolasu.traversing.findAncestorOfType
 import com.strumenta.kolasu.traversing.searchByType
@@ -36,14 +37,12 @@ class EntitySymbolResolver(issues: MutableList<Issue> = mutableListOf()) : ASTTr
         this.registerIdentityMapping(BooleanType::class)
         this.registerNodeFactory(EntityRefType::class) { source ->
             source.apply {
-                this.target.referred = this.findAncestorOfType(Module::class.java)?.searchByType(Entity::class.java)
-                    ?.find { it.name == this.target.name }
-                if (!this.target.resolved) {
+                val entities = this.findAncestorOfType(Module::class.java)!!.searchByType(Entity::class.java).toList()
+                val resolved = target.tryToResolve(entities, true)
+                if (!resolved) {
                     this@EntitySymbolResolver.issues.add(
                         Issue.semantic(
-                            "Entity ${this.target.name} not found",
-                            IssueSeverity.ERROR,
-                            position = this.position
+                            "Entity ${this.target.name} not found", IssueSeverity.ERROR, position = this.position
                         )
                     )
                 }
