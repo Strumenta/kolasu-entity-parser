@@ -1,0 +1,16 @@
+module Demo {
+    entity StringEntity {
+        stringValue: string = "Could this be some sort of hello world?";
+        unknownString: string;
+    }
+    entity IntegerEntity {
+        oneValue: integer = 3;
+        anotherValue: integer = oneValue + 2;
+    }
+    entity AnotherEntity {
+        subEntity: IntegerEntity;
+        copiedValue = IntegerEntity.oneValue;
+        multiplication: integer = 1 * 10;
+        subtraction = 10 - 2;
+    }
+}
