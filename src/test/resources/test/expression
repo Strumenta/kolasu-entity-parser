@@ -12,5 +12,6 @@ module Demo {
         copiedValue = IntegerEntity.oneValue;
         multiplication: integer = 1 * 10;
         subtraction = 10 - 2;
+        unknownFeature;
     }
 }

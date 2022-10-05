@@ -31,8 +31,8 @@ fqn
 
 expression
     : LPAR expression RPAR                                  #parentheses_expression
-    | (INTEGER_VALUE | BOOLEAN_VALUE | STRING_VALUE)        #literal_expression
-    | expression (MULT | DIV) expression                    #binary_expression
-    | expression (PLUS | MINUS) expression                  #binary_expression
-    | fqn                                                   #fqn_expression
+    | value=(INTEGER_VALUE | BOOLEAN_VALUE | STRING_VALUE)  #literal_expression
+    | left=expression op=(MULT | DIV) right=expression      #binary_expression
+    | left=expression op=(PLUS | MINUS) right=expression    #binary_expression
+    | target=fqn                                            #fqn_expression
     ;

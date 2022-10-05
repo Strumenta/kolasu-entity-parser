@@ -12,6 +12,7 @@ class EntityParseTreeToAstTransformer(issues: MutableList<Issue> = mutableListOf
         registerEntityMapping()
         registerFeatureMapping()
         registerTypeMappings()
+        registerExpressionMappings()
     }
 
     private fun registerModuleMapping() {
@@ -27,6 +28,7 @@ class EntityParseTreeToAstTransformer(issues: MutableList<Issue> = mutableListOf
     private fun registerFeatureMapping() {
         this.registerNodeFactory(AntlrEntityParser.FeatureContext::class) { ctx -> Feature(name = ctx.name.text) }
             .withChild(AntlrEntityParser.FeatureContext::type, Feature::type)
+            .withChild(AntlrEntityParser.FeatureContext::value, Feature::value)
     }
 
     private fun registerTypeMappings() {
@@ -36,5 +38,18 @@ class EntityParseTreeToAstTransformer(issues: MutableList<Issue> = mutableListOf
         this.registerNodeFactory(AntlrEntityParser.Entity_typeContext::class) { source ->
             EntityRefType(target = ReferenceByName(name = source.target.text))
         }
+    }
+
+    private fun registerExpressionMappings() {
+        this.registerNodeFactory(AntlrEntityParser.Literal_expressionContext::class) { ctx -> LiteralExpression(ctx.value.text) }
+        this.registerNodeFactory(AntlrEntityParser.Fqn_expressionContext::class) { ctx ->
+            FqnExpression(ReferenceByName(ctx.target.text))
+        }
+
+        this.registerNodeFactory(AntlrEntityParser.Binary_expressionContext::class) { ctx ->
+            BinaryExpression(operator = BinaryOperator.bySymbol(ctx.op.text)!!)
+        }
+            .withChild(AntlrEntityParser.Binary_expressionContext::left, BinaryExpression::left)
+            .withChild(AntlrEntityParser.Binary_expressionContext::right, BinaryExpression::right)
     }
 }
