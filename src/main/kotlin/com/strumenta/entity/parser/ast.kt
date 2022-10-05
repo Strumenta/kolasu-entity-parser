@@ -4,21 +4,25 @@ import com.strumenta.kolasu.model.Node
 import com.strumenta.kolasu.model.PossiblyNamed
 import com.strumenta.kolasu.model.ReferenceByName
 
+open class EntityNode(
+    override val name: String? = null
+) : Node(), PossiblyNamed
+
 data class Module(
     override val name: String? = null,
     var entities: List<Entity> = listOf()
-) : Node(), PossiblyNamed
+) : EntityNode(name)
 
 data class Entity(
     override val name: String? = null,
     var features: List<Feature> = listOf()
-) : Node(), PossiblyNamed
+) : EntityNode(name)
 
 data class Feature(
     override val name: String? = null,
     var type: Type? = null,
     var value: Expression? = null
-) : Node(), PossiblyNamed
+) : EntityNode(name)
 
 open class Type : Node()
 
@@ -41,7 +45,8 @@ data class BinaryExpression(
     val operator: BinaryOperator
 ) : Expression()
 data class FqnExpression(
-    val target: ReferenceByName<Feature>
+    val target: ReferenceByName<EntityNode>,
+    val context: FqnExpression? = null
 ) : Expression()
 enum class BinaryOperator(val symbol: String) {
     SUM("+"),

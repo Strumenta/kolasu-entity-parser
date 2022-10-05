@@ -42,8 +42,13 @@ class EntityParseTreeToAstTransformer(issues: MutableList<Issue> = mutableListOf
 
     private fun registerExpressionMappings() {
         this.registerNodeFactory(AntlrEntityParser.Literal_expressionContext::class) { ctx -> LiteralExpression(ctx.value.text) }
+
         this.registerNodeFactory(AntlrEntityParser.Fqn_expressionContext::class) { ctx ->
-            FqnExpression(ReferenceByName(ctx.target.text))
+            ctx.target.text
+                .split(".")
+                .fold<String, FqnExpression?>(initial = null as FqnExpression?) { context, name ->
+                    FqnExpression(target = ReferenceByName(name), context)
+                }!!
         }
 
         this.registerNodeFactory(AntlrEntityParser.Binary_expressionContext::class) { ctx ->
