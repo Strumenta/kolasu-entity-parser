@@ -1,11 +1,13 @@
 package com.strumenta.entity.parser
 
+import com.andreapivetta.kolor.cyan
 import com.andreapivetta.kolor.green
 import com.andreapivetta.kolor.yellow
 import com.strumenta.kolasu.emf.saveMetamodel
 import com.strumenta.kolasu.emf.saveModel
 import com.strumenta.kolasu.model.Node
 import com.strumenta.kolasu.model.ReferenceByName
+import com.strumenta.kolasu.model.find
 import com.strumenta.kolasu.model.pos
 import com.strumenta.kolasu.parsing.FirstStageParsingResult
 import com.strumenta.kolasu.parsing.ParsingResult
@@ -28,7 +30,10 @@ import com.strumenta.kolasu.validation.IssueSeverity
 import org.eclipse.emf.common.util.URI
 import org.junit.Test
 import java.io.File
+import java.nio.file.Paths
 import kotlin.io.path.Path
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 internal class ExpressionsTest {
 
@@ -49,7 +54,34 @@ internal class ExpressionsTest {
             .forEach(this::printNode)
     }
 
-    private fun printNode(node: Node) {
+    @Test
+    fun testFqnExpressionsAST() {
+        val sourceFilePath = "/test/expression"
+        val fqnNodes = getAST(sourceFilePath)
+            .walk()
+            .filter { it is FqnExpression }
+            .map { it as FqnExpression }
+            .toList()
+
+        fqnNodes.forEach { printNode(it, sourceFilePath) }
+
+        fqnNodes
+            .filter {
+                it.findAncestorOfType(Feature::class.java)?.name != "unsolvable"
+                        || (it.context == null && it.target.name == "FqnExamplesEntity")
+            }
+            .forEach { assertTrue(it.target.resolved, "Should be resolved: $it") }
+
+        fqnNodes
+            .filter {
+                it.findAncestorOfType(Feature::class.java)?.name == "unsolvable"
+                        && it.context != null
+                        && it.target.name != "FqnExamplesEntity"
+            }
+            .forEach { assertFalse(it.target.resolved, "Should not be resolved: $it") }
+    }
+
+    private fun printNode(node: Node, sourceFilePath: String? = null) {
         // what type of node is this?
         println("NodeType: ".yellow() + node.nodeType)
         // what are the properties of this node?
@@ -59,7 +91,17 @@ internal class ExpressionsTest {
         // who is the parent of this node, if any?
         println("Parent: ".yellow() + node.parent)
         // what is the exact position of this node?
-        println("Position: ".yellow() + node.position)
+        print("Position: ".yellow() + node.position)
+        // link to source file, if specified
+        if (sourceFilePath == null || node.position == null) {
+            println()
+        }
+        else {
+            val filePath = ExpressionsTest::class.java.getResource(sourceFilePath).path
+            val positionString = "${node.position!!.start.line}:${node.position!!.start.column + 1}:" +
+                    "${node.position!!.end.line}:${node.position!!.end.column + 1}"
+            println(" @file://${filePath}:${positionString}")
+        }
         // what text does this node correspond to?
         println("Source Text: ".yellow() + node.sourceText)
         // what node has been created started from this one?
@@ -94,7 +136,12 @@ internal class ExpressionsTest {
                 println("Operator: ".green() + node.operator)
             }
             is FqnExpression -> {
-                println("Value: ".green() + node.target)
+                print("Target: ".green() + node.target)
+                if (node.target.resolved)
+                    println(" -> " + "${node.target.referred}".cyan())
+                else
+                    println()
+                println("Context: ".green() + node.context)
             }
         }
         println()

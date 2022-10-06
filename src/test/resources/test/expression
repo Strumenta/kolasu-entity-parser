@@ -8,10 +8,16 @@ module Demo {
         anotherValue: integer = oneValue + 2;
     }
     entity AnotherEntity {
+        stringValue = "Right one!";
         subEntity: IntegerEntity;
-        copiedValue = IntegerEntity.oneValue;
         multiplication: integer = 1 * 10;
         subtraction = 10 - 2;
         unknownFeature;
+    }
+    entity FqnExamplesEntity {
+        entityRes = IntegerEntity.oneValue;
+        featureFromCurrentEntity = entityRes;
+        moduleRes = Demo.AnotherEntity.stringValue;
+        unsolvable = FqnExamplesEntity.Referred.Name;
     }
 }

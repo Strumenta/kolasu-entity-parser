@@ -10,6 +10,8 @@ object EntityMetamodelBuilder : (Resource?) -> MetamodelBuilder {
     private const val nsPrefix: String = "entity"
 
     private val metaclasses: List<KClass<*>> = listOf(
+        EntityNode::class,
+        Entity::class,
         Module::class,
         Entity::class,
         Feature::class,
@@ -18,7 +20,12 @@ object EntityMetamodelBuilder : (Resource?) -> MetamodelBuilder {
         StringType::class,
         IntegerType::class,
         BooleanType::class,
-        EntityRefType::class
+        EntityRefType::class,
+        Expression::class,
+        LiteralExpression::class,
+        BinaryExpression::class,
+        FqnExpression::class,
+        BinaryOperator::class //<-- TODO: do we also need this?
     )
 
     override fun invoke(resource: Resource?): MetamodelBuilder =
