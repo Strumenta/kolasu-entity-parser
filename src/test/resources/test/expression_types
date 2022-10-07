@@ -1,0 +1,11 @@
+module Demo {
+    entity TypeTests {
+        oneLiteral: integer = 100;
+        twoLiteralsBinary = 20 - 10;
+        nestedBinaries = 1 + 2 * 3;
+        wrongExpressionTypes = 1 + "text";
+        expressionNotMatchingType: integer = "1";
+        refToLiteral = oneLiteral;
+        refToBinary = nestedBinaries;
+    }
+}

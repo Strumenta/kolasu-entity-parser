@@ -35,7 +35,9 @@ data class EntityRefType(
     var target: ReferenceByName<Entity>
 ) : Type()
 
-open class Expression() : Node()
+open class Expression(
+    var type: Type? = null
+) : Node()
 data class LiteralExpression(
     val value: String?
 ): Expression()

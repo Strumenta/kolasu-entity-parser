@@ -5,41 +5,72 @@ import com.andreapivetta.kolor.green
 import com.andreapivetta.kolor.yellow
 import com.strumenta.kolasu.model.Node
 import com.strumenta.kolasu.parsing.FirstStageParsingResult
-import com.strumenta.kolasu.traversing.findAncestorOfType
+import com.strumenta.kolasu.parsing.ParsingResult
 import com.strumenta.kolasu.traversing.walk
 import org.junit.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
-internal class ExpressionsTest {
+internal class TypeResolutionTest {
 
     private val parser: EntityParser = EntityParser()
 
     @Test
-    fun resolveFqnReferences() {
-        val sourceFilePath = "/test/resolving_fqn_references"
-        val fqnNodes = getAST(sourceFilePath)
+    fun testTypesAST() {
+        val sourceFilePath = "/test/expression_types"
+        val ast = getAST(sourceFilePath)
+        val expressionNodes = ast.root!!
+            .walk()
+            .filter { it is Expression }
+            .map { it as Expression }
+            .toList()
+
+        expressionNodes.forEach { printNode(it, sourceFilePath) }
+
+        println(ast.issues.joinToString(
+            separator = "\n",
+            prefix = "Issues list:\n",
+            postfix = "") { "> " + it.toString().cyan() })
+
+        // TODO: checks
+    }
+
+    @Test
+    fun testBinaryExpressionTypesAST() {
+        val sourceFilePath = "/test/expression_types"
+        val ast = getAST(sourceFilePath)
+        val expressionNodes = ast.root!!
+            .walk()
+            .filter { it is BinaryExpression }
+            .map { it as BinaryExpression }
+            .toList()
+
+        expressionNodes.forEach { printNode(it, sourceFilePath) }
+
+        println(ast.issues.joinToString(
+            separator = "\n",
+            prefix = "Issues list:\n",
+            postfix = "") { "> " + it.toString().cyan() })
+
+        // TODO: checks
+    }
+
+    @Test
+    fun testFqnExpressionTypesAST() {
+        val sourceFilePath = "/test/expression_types"
+        val ast = getAST(sourceFilePath)
+        val expressionNodes = ast.root!!
             .walk()
             .filter { it is FqnExpression }
             .map { it as FqnExpression }
             .toList()
 
-        fqnNodes.forEach { printNode(it, sourceFilePath) }
+        expressionNodes.forEach { printNode(it, sourceFilePath) }
 
-        fqnNodes
-            .filter {
-                it.findAncestorOfType(Feature::class.java)?.name != "unsolvable"
-                        || (it.context == null && it.target.name == "FqnExamplesEntity")
-            }
-            .forEach { assertTrue(it.target.resolved, "Should be resolved: $it") }
+        println(ast.issues.joinToString(
+            separator = "\n",
+            prefix = "Issues list:\n",
+            postfix = "") { "> " + it.toString().cyan() })
 
-        fqnNodes
-            .filter {
-                it.findAncestorOfType(Feature::class.java)?.name == "unsolvable"
-                        && it.context != null
-                        && it.target.name != "FqnExamplesEntity"
-            }
-            .forEach { assertFalse(it.target.resolved, "Should not be resolved: $it") }
+        // TODO: checks
     }
 
     private fun printNode(node: Node, sourceFilePath: String? = null) {
@@ -58,7 +89,7 @@ internal class ExpressionsTest {
             println()
         }
         else {
-            val filePath = ExpressionsTest::class.java.getResource(sourceFilePath).path
+            val filePath = TypeResolutionTest::class.java.getResource(sourceFilePath).path
             val positionString = "${node.position!!.start.line}:${node.position!!.start.column + 1}:" +
                     "${node.position!!.end.line}:${node.position!!.end.column + 1}"
             println(" @file://${filePath}:${positionString}")
@@ -114,7 +145,7 @@ internal class ExpressionsTest {
     }
 
     private fun getResourceContent(resourcePath: String): String {
-        return ExpressionsTest::class.java.getResource(resourcePath).readText()
+        return TypeResolutionTest::class.java.getResource(resourcePath).readText()
     }
 
     private fun getParseTree(resourcePath: String): FirstStageParsingResult<AntlrEntityParser.ModuleContext> {
@@ -122,9 +153,8 @@ internal class ExpressionsTest {
         return parser.parseFirstStage(input)
     }
 
-    private fun getAST(resourcePath: String): Module {
+    private fun getAST(resourcePath: String): ParsingResult<Node> {
         val input = getResourceContent(resourcePath)
-        val ast = this.parser.parse(input) // parse code and build AST
-        return ast.root!! as Module // retrieve AST root module
+        return parser.parse(input)
     }
 }

@@ -41,7 +41,22 @@ class EntityParseTreeToAstTransformer(issues: MutableList<Issue> = mutableListOf
     }
 
     private fun registerExpressionMappings() {
-        this.registerNodeFactory(AntlrEntityParser.Literal_expressionContext::class) { ctx -> LiteralExpression(ctx.value.text) }
+        this.registerNodeFactory(AntlrEntityParser.Literal_expressionContext::class) { ctx ->
+            val expression = LiteralExpression(ctx.value.text)
+
+            expression.type = if (ctx.BOOLEAN_VALUE() != null)
+                BooleanType()
+            else if (ctx.INTEGER_VALUE() != null)
+                IntegerType()
+            else if (ctx.STRING_VALUE() != null)
+                StringType()
+            else {
+                // TODO: log problem (into issues list)
+                null
+            }
+
+            expression
+        }
 
         this.registerNodeFactory(AntlrEntityParser.Fqn_expressionContext::class) { ctx ->
             ctx.target.text

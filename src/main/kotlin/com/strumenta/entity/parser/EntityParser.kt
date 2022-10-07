@@ -23,9 +23,15 @@ class EntityParser : EMFEnabledParser<Node, AntlrEntityParser, AntlrEntityParser
     ): Node? = EntityParseTreeToAstTransformer(issues).transform(parseTreeRoot)
 
     override fun postProcessAst(ast: Node, issues: MutableList<Issue>): Node =
-        super.postProcessAst(ast, issues).let { this.resolveSymbols(it, issues) }
+        super.postProcessAst(ast, issues)
+            .let { this.resolveSymbols(it, issues) }
+            .let { this.typeChecking(it, issues) }
 
     private fun resolveSymbols(ast: Node, issues: MutableList<Issue>): Node {
         return EntitySymbolResolver(issues).transform(ast)!!
+    }
+
+    private fun typeChecking(ast: Node, issues: MutableList<Issue>): Node {
+        return EntityTypeComputer(issues).transform(ast)!!
     }
 }
