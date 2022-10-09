@@ -30,9 +30,6 @@ MULT: '*';
 DIV: '/';
 DOT: '.';
 
-// identifier
-ID: [A-Z]+;
-
 // whitespaces
 WS: [ \r\n\t]+ -> channel(HIDDEN);
 
@@ -44,3 +41,6 @@ fragment INLINE_COMMENT: '//' .*? [\r\n] ;
 INTEGER_VALUE: (MINUS | PLUS)? [0-9]+ ;
 STRING_VALUE: DQUOTE .*? DQUOTE ;
 BOOLEAN_VALUE: 'true' | 'false' ;
+
+// identifier
+ID: [A-Z]+;
