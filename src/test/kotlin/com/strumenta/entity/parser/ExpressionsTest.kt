@@ -4,10 +4,14 @@ import com.andreapivetta.kolor.cyan
 import com.andreapivetta.kolor.green
 import com.andreapivetta.kolor.yellow
 import com.strumenta.kolasu.model.Node
-import com.strumenta.kolasu.model.find
+import com.strumenta.kolasu.model.Point
+import com.strumenta.kolasu.model.Position
 import com.strumenta.kolasu.parsing.FirstStageParsingResult
+import com.strumenta.kolasu.parsing.ParsingResult
 import com.strumenta.kolasu.traversing.findAncestorOfType
 import com.strumenta.kolasu.traversing.walk
+import com.strumenta.kolasu.validation.Issue
+import com.strumenta.kolasu.validation.IssueSeverity
 import org.junit.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -19,13 +23,25 @@ internal class ExpressionsTest {
     @Test
     fun resolveFqnReferences() {
         val sourceFilePath = "/test/resolving_fqn_references"
-        val fqnNodes = getAST(sourceFilePath)
+        val ast = getAST(sourceFilePath)
+        val fqnNodes = ast.root!!
             .walk()
             .filter { it is FqnExpression }
             .map { it as FqnExpression }
             .toList()
 
         fqnNodes.forEach { printNode(it, sourceFilePath) }
+
+        assertTrue(ast.issues.containsAll(listOf(
+            Issue.semantic(
+                "No features found for name: nonExistentReference",
+                IssueSeverity.ERROR,
+                Position(start = Point(22, 21), end = Point(22, 41))),
+            Issue.semantic(
+                "No features found for name: Demo.AnotherNonExistentReference",
+                IssueSeverity.ERROR,
+                Position(start = Point(23, 30), end = Point(23, 62)))
+            )))
 
         fqnNodes
             .filter {
@@ -124,9 +140,8 @@ internal class ExpressionsTest {
         return parser.parseFirstStage(input)
     }
 
-    private fun getAST(resourcePath: String): Module {
+    private fun getAST(resourcePath: String): ParsingResult<Node> {
         val input = getResourceContent(resourcePath)
-        val ast = this.parser.parse(input) // parse code and build AST
-        return ast.root!! as Module // retrieve AST root module
+        return parser.parse(input)
     }
 }
