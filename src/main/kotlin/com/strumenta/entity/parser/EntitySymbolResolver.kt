@@ -5,10 +5,12 @@ import com.strumenta.kolasu.model.Origin
 import com.strumenta.kolasu.transformation.ASTTransformer
 import com.strumenta.kolasu.traversing.findAncestorOfType
 import com.strumenta.kolasu.traversing.searchByType
-import com.strumenta.kolasu.traversing.walkChildren
+import com.strumenta.kolasu.traversing.walkAncestors
+import com.strumenta.kolasu.traversing.walkLeavesFirst
 import com.strumenta.kolasu.validation.Issue
 import com.strumenta.kolasu.validation.IssueSeverity
-import java.util.Stack
+import java.util.LinkedList
+import java.util.Queue
 import kotlin.reflect.KClass
 
 class EntitySymbolResolver(issues: MutableList<Issue> = mutableListOf()) : ASTTransformer(issues) {
@@ -63,74 +65,59 @@ class EntitySymbolResolver(issues: MutableList<Issue> = mutableListOf()) : ASTTr
             .withChild(BinaryExpression::right, BinaryExpression::right)
         this.registerNodeFactory(FqnExpression::class) { source ->
             source.apply {
-
-                if (this.target.resolved)
-                    return@apply
-
-                val fqnNames = getFqnStack(this)
-                val leftmostFqn = fqnNames.pop()
-
-                // search for the leftmost name, from current scope to outer scopes
-                leftmostFqn.target.referred = this.findAncestorOfType(Entity::class.java)
-                    ?.searchByType(Feature::class.java)
-                    ?.find { it.name == leftmostFqn.target.name }
-                    ?: this.findAncestorOfType(Module::class.java)
-                        ?.searchByType(Entity::class.java)
-                        ?.find { it.name == leftmostFqn.target.name }
-                            ?: this.findAncestorOfType(Module::class.java)
-                        .takeIf { it?.name == leftmostFqn.target.name }
-
-                if (!leftmostFqn.target.resolved) {
-                    issues.add(
-                        Issue.semantic(
-                            "Name not found: ${leftmostFqn.target.name} in context: ${leftmostFqn.context}",
-                            IssueSeverity.ERROR,
-                            position = this.position
-                        )
-                    )
-                }
-
-                // search into inner nodes for possible remaining names
-                var scopeNode = leftmostFqn.target.referred
-                while (scopeNode != null && fqnNames.isNotEmpty()) {
-                    val currentFqn = fqnNames.pop()
-                    currentFqn.target.referred = scopeNode.walkChildren()
-                        .filter { childNode ->
-                            when (childNode) {
-                                is Entity -> childNode.name == currentFqn.target.name
-                                is Feature -> childNode.name == currentFqn.target.name
-                                else -> false
-                            }
-                        }
-                        .map { it as EntityNode }
-                        .firstOrNull()
-
-                    scopeNode = if (currentFqn.target.resolved) {
-                        currentFqn.target.referred
-                    } else {
-                        null
+                val fqnNames = getRightToLeftFqnQueue(source)
+                val rightmostFqn = fqnNames.poll()
+                var candidateFeatures = source.findAncestorOfType(Module::class.java)!!
+                    .searchByType(Feature::class.java)
+                    .filter { feature ->
+                        feature.name == rightmostFqn.target.name
                     }
+                    .filter { feature ->
+                        val fqnNamesList = fqnNames.asSequence()
+                            .map { it.target.name }
+                            .toList()
+                        val ancestorNamesList = feature.walkAncestors()
+                            .map { (it as EntityNode).name }
+                            .toList()
+                            .subList(0, fqnNamesList.size)
+                        fqnNamesList == ancestorNamesList
+                    }
+                    .toList()
 
-                    if (!currentFqn.target.resolved) {
-                        issues.add(
-                            Issue.semantic(
-                                "Name not found: ${currentFqn.target.name} in context: ${currentFqn.context}",
-                                IssueSeverity.ERROR,
-                                position = this.position
-                            )
-                        )
+                if (candidateFeatures.isEmpty()) {
+                    issues.add(Issue.semantic(
+                        "No features found for name: ${rightmostFqn.sourceText}",
+                        IssueSeverity.ERROR,
+                        position = this.position
+                    ))
+                } else if (candidateFeatures.count() > 1) {
+                    issues.add(Issue.semantic(
+                        "Ambiguous name: ${rightmostFqn.sourceText} matches with multiple nodes: "
+                    + candidateFeatures.joinToString(
+                            separator = "\n",
+                            prefix = "\n") { f -> "> $f" },
+                        IssueSeverity.ERROR,
+                        position = this.position))
+                } else {
+                    var node : EntityNode? = candidateFeatures.first() as EntityNode
+                    var fqn : FqnExpression? = source
+
+                    while (fqn != null) {
+                        fqn.target.referred = node
+                        fqn = fqn.context
+                        node = node?.parent as? EntityNode
                     }
                 }
             }
         }
     }
 
-    private fun getFqnStack(fqn: FqnExpression, stack: Stack<FqnExpression> = Stack()): Stack<FqnExpression> {
+    private fun getRightToLeftFqnQueue(fqn: FqnExpression, fqnList: Queue<FqnExpression> = LinkedList()): Queue<FqnExpression> {
         return if (fqn == null)
-            stack
+            fqnList
         else {
-            stack.add(fqn)
-            fqn.context?.let{ getFqnStack(it, stack) } ?: stack
+            fqnList.add(fqn)
+            fqn.context?.let{ getRightToLeftFqnQueue(it, fqnList) } ?: fqnList
         }
     }
 
