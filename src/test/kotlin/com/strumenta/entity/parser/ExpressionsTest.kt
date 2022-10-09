@@ -30,19 +30,18 @@ internal class ExpressionsTest {
         fqnNodes
             .filter {
                 it.findAncestorOfType(Feature::class.java)?.name == "unsolvable"
-                        || (it.findAncestorOfType(Feature::class.java)?.name == "partiallyUnsolvable"
-                        && it.context != null)
+                        it.findAncestorOfType(Feature::class.java)?.name == "partiallyUnsolvable"
             }
-            .forEach { assertFalse(it.target.resolved, "Should not be resolved: $it") }
+            .forEach { assertFalse(it.target.resolved,
+                "Should not be resolved: $it at position: ${it.position}") }
 
         fqnNodes
             .filter {
                 it.findAncestorOfType(Feature::class.java)?.name != "unsolvable"
                         && it.findAncestorOfType(Feature::class.java)?.name != "partiallyUnsolvable"
-                        || (it.findAncestorOfType(Feature::class.java)?.name == "partiallyUnsolvable"
-                        && it.context == null)
             }
-            .forEach { assertTrue(it.target.resolved, "Should be resolved: $it") }
+            .forEach { assertTrue(it.target.resolved,
+                "Should be resolved: $it at position: ${it.position}") }
     }
 
     private fun printNode(node: Node, sourceFilePath: String? = null) {
