@@ -18,7 +18,7 @@ module Demo {
         stringValue = TypeExamplesEntity.stringValue;
         unknownTypeOrValue = AnotherEntity.unknownTypeOrValue;
         selfReference = selfReference;
-        typedSelfReference : boolean = typeSelfReference;
+        typedSelfReference : boolean = typedSelfReference;
         unsolvable = nonExistentReference;
         partiallyUnsolvable = Demo.AnotherNonExistentReference;
     }
