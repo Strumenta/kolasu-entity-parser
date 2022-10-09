@@ -4,6 +4,7 @@ import com.andreapivetta.kolor.cyan
 import com.andreapivetta.kolor.green
 import com.andreapivetta.kolor.yellow
 import com.strumenta.kolasu.model.Node
+import com.strumenta.kolasu.model.find
 import com.strumenta.kolasu.parsing.FirstStageParsingResult
 import com.strumenta.kolasu.traversing.findAncestorOfType
 import com.strumenta.kolasu.traversing.walk
@@ -28,18 +29,20 @@ internal class ExpressionsTest {
 
         fqnNodes
             .filter {
-                it.findAncestorOfType(Feature::class.java)?.name != "unsolvable"
-                        || (it.context == null && it.target.name == "FqnExamplesEntity")
+                it.findAncestorOfType(Feature::class.java)?.name == "unsolvable"
+                        || (it.findAncestorOfType(Feature::class.java)?.name == "partiallyUnsolvable"
+                        && it.context != null)
             }
-            .forEach { assertTrue(it.target.resolved, "Should be resolved: $it") }
+            .forEach { assertFalse(it.target.resolved, "Should not be resolved: $it") }
 
         fqnNodes
             .filter {
-                it.findAncestorOfType(Feature::class.java)?.name == "unsolvable"
-                        && it.context != null
-                        && it.target.name != "FqnExamplesEntity"
+                it.findAncestorOfType(Feature::class.java)?.name != "unsolvable"
+                        && it.findAncestorOfType(Feature::class.java)?.name != "partiallyUnsolvable"
+                        || (it.findAncestorOfType(Feature::class.java)?.name == "partiallyUnsolvable"
+                        && it.context == null)
             }
-            .forEach { assertFalse(it.target.resolved, "Should not be resolved: $it") }
+            .forEach { assertTrue(it.target.resolved, "Should be resolved: $it") }
     }
 
     private fun printNode(node: Node, sourceFilePath: String? = null) {

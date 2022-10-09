@@ -1,23 +1,25 @@
 module Demo {
-    entity StringEntity {
-        stringValue: string = "Could this be some sort of hello world?";
-        unknownString: string;
-    }
-    entity IntegerEntity {
-        oneValue: integer = 3;
-        anotherValue: integer = oneValue + 2;
+    entity TypeExamplesEntity {
+        integerValue : integer = 10;
+        stringValue : string = "Example string";
+        unknownStringValue : string;
+        implicitBoolean = false;
     }
     entity AnotherEntity {
-        stringValue = "Right one!";
-        subEntity: IntegerEntity;
-        multiplication: integer = 1 * 10;
-        subtraction = 10 - 2;
-        unknownFeature;
+        entityFeature : TypeExamplesEntity;
+        stringValue = "Another example string";
+        unknownTypeOrValue;
     }
-    entity FqnExamplesEntity {
-        entityRes = IntegerEntity.oneValue;
-        featureFromCurrentEntity = entityRes;
-        moduleRes = Demo.AnotherEntity.stringValue;
-        unsolvable = FqnExamplesEntity.Referred.Name;
+    entity FqnResolution {
+        fromExternalEntity = TypeExamplesEntity.integerValue;
+        previouslyDeclaredEntity = fromExternalEntity;
+        notDeclaredYetEntity = byModuleEntityFeature;
+        byModuleEntityFeature = Demo.AnotherEntity.stringValue;
+        stringValue = TypeExamplesEntity.stringValue;
+        unknownTypeOrValue = AnotherEntity.unknownTypeOrValue;
+        selfReference = selfReference;
+        typedSelfReference : boolean = typeSelfReference;
+        unsolvable = nonExistentReference;
+        partiallyUnsolvable = Demo.AnotherNonExistentReference;
     }
 }
