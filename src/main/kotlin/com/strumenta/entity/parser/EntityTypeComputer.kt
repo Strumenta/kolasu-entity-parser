@@ -6,10 +6,12 @@ import com.strumenta.kolasu.transformation.ASTTransformer
 import com.strumenta.kolasu.traversing.*
 import com.strumenta.kolasu.validation.Issue
 import com.strumenta.kolasu.validation.IssueSeverity
-import java.util.Stack
+import kotlin.RuntimeException
 import kotlin.reflect.KClass
 
 class EntityTypeComputer(issues: MutableList<Issue> = mutableListOf()) : ASTTransformer(issues) {
+
+    private val operations = Operations()
 
     init {
         registerModuleMapping()
@@ -47,23 +49,27 @@ class EntityTypeComputer(issues: MutableList<Issue> = mutableListOf()) : ASTTran
                 source.walkLeavesFirst()
                     .filter { it is BinaryExpression }
                     .map { it as BinaryExpression }
-                    .forEach {
-                        val left = it.left!!.type
-                        val right = it.right!!.type
-                        val operator = it.operator
-                        when {
-                            (left is IntegerType && right is IntegerType)
-                                    || (left is StringType && right is StringType && operator == BinaryOperator.SUM) -> {
-                                it.type = left
-                            }
-
-                            else -> issues.add(
-                                Issue.semantic(
-                                    "Operator $operator cannot be applied to: $left and $right",
-                                    IssueSeverity.ERROR,
-                                    position = this.position
-                                )
-                            )
+                    .forEach { binaryExpression ->
+                        binaryExpression.type = try {
+                            operations.applyFunction(
+                                binaryExpression.operator,
+                                binaryExpression.left!!.type!!,
+                                binaryExpression.right!!.type!!)
+                                .let { result ->
+                                    if (result == null) {
+                                        issues.add(Issue.semantic(
+                                            "Operator $operator cannot be applied to: $left and $right",
+                                            IssueSeverity.ERROR,
+                                            position = this.position))
+                                    }
+                                    result
+                                }
+                        } catch (e : RuntimeException) {
+                            issues.add(Issue.semantic(
+                                e.message ?: e.toString(),
+                                IssueSeverity.ERROR,
+                                position = this.position))
+                            null
                         }
                     }
             }
