@@ -55,15 +55,6 @@ class EntityTypeComputer(issues: MutableList<Issue> = mutableListOf()) : ASTTran
                                 binaryExpression.operator,
                                 binaryExpression.left!!.type!!,
                                 binaryExpression.right!!.type!!)
-                                .let { result ->
-                                    if (result == null) {
-                                        issues.add(Issue.semantic(
-                                            "Operator $operator cannot be applied to: $left and $right",
-                                            IssueSeverity.ERROR,
-                                            position = this.position))
-                                    }
-                                    result
-                                }
                         } catch (e : RuntimeException) {
                             issues.add(Issue.semantic(
                                 e.message ?: e.toString(),
