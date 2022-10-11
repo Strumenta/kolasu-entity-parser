@@ -77,7 +77,7 @@ class EntityTypeComputer(issues: MutableList<Issue> = mutableListOf()) : ASTTran
         this.registerNodeFactory(FqnExpression::class) { source ->
             source.apply {
                 if (source.target.resolved)
-                    source.type = (source.target.referred as Feature).type
+                    source.type = getFeatureType(source.target.referred as Feature)
             }
         }
     }
@@ -88,4 +88,8 @@ class EntityTypeComputer(issues: MutableList<Issue> = mutableListOf()) : ASTTran
 
     private fun <S : Node> registerIdentityMapping(kclass: KClass<S>) =
         this.registerNodeFactory(kclass) { source -> source }
+
+    private fun getFeatureType(feature: Feature) : Type? {
+        return feature.type ?: feature.value?.type
+    }
 }
