@@ -24,8 +24,7 @@ object EntityMetamodelBuilder : (Resource?) -> MetamodelBuilder {
         Expression::class,
         LiteralExpression::class,
         BinaryExpression::class,
-        FqnExpression::class,
-        BinaryOperator::class //<-- TODO: do we also need this?
+        FqnExpression::class
     )
 
     override fun invoke(resource: Resource?): MetamodelBuilder =
