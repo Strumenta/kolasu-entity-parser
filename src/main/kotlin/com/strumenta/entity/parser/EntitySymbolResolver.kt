@@ -42,7 +42,9 @@ class EntitySymbolResolver(issues: MutableList<Issue> = mutableListOf()) : ASTTr
                 if (!resolved) {
                     this@EntitySymbolResolver.issues.add(
                         Issue.semantic(
-                            "Entity ${this.target.name} not found", IssueSeverity.ERROR, position = this.position
+                            "Entity ${this.target.name} not found",
+                            IssueSeverity.ERROR,
+                            position = this.position
                         )
                     )
                 }

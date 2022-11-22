@@ -29,6 +29,7 @@ import org.junit.Test
 import java.io.File
 import kotlin.io.path.Path
 
+@Suppress("UNCHECKED_CAST")
 internal class EntityParserTest {
 
     private val parser: EntityParser = EntityParser()
@@ -129,7 +130,6 @@ internal class EntityParserTest {
 
     @Test
     fun traversalSearchByType() {
-        val module = module()
         // Retrieve all Module instances from Demo
         module().searchByType(klass = Module::class.java, walker = Node::walk)
             .forEachIndexed { index, node -> println("$index: $node".yellow()) }
@@ -153,7 +153,8 @@ internal class EntityParserTest {
         println(
             "${
             module.findByPosition(
-                position = module.entities[1].features[0].type!!.position!!, selfContained = true
+                position = module.entities[1].features[0].type!!.position!!,
+                selfContained = true
             )
             }".yellow()
         )
@@ -176,13 +177,15 @@ internal class EntityParserTest {
                 name = "Demo",
                 entities = listOf(
                     Entity(
-                        name = "FirstEntity", features = IgnoreChildren()
+                        name = "FirstEntity",
+                        features = IgnoreChildren()
                     ),
                     Entity(
                         name = "SecondEntity",
                         features = listOf(
                             Feature(
-                                name = "name", type = StringType()
+                                name = "name",
+                                type = StringType()
                             )
                         )
                     )
@@ -207,7 +210,7 @@ internal class EntityParserTest {
                 Issue.syntactic(
                     message = "extraneous input '<EOF>' expecting {'entity', '}'}",
                     severity = IssueSeverity.ERROR,
-                    position = pos(4, 5, 4, 5),
+                    position = pos(4, 5, 4, 5)
                 ),
                 Issue.syntactic(
                     message = "Error node found (token: <missing '}'>)",
@@ -222,7 +225,8 @@ internal class EntityParserTest {
                         name = "ExampleEntity",
                         features = listOf(
                             Feature(
-                                name = "name", type = StringType()
+                                name = "name",
+                                type = StringType()
                             )
                         )
                     )
@@ -243,7 +247,7 @@ internal class EntityParserTest {
                 }
             """.trimIndent()
         ) as ParsingResult<Module>
-        val expectedParsingResult = ParsingResult<Module>(
+        val expectedParsingResult = ParsingResult(
             issues = listOf(
                 Issue.semantic(
                     message = "Entity NotExistingEntity not found",
@@ -283,7 +287,9 @@ internal class EntityParserTest {
             """.trimIndent(),
             considerPosition = false
         ).saveModel(
-            metamodel, URI.createFileURI(Path("src/test/resources/model.json").toString()), includeMetamodel = false
+            metamodel,
+            URI.createFileURI(Path("src/test/resources/model.json").toString()),
+            includeMetamodel = false
         )
     }
 
