@@ -8,17 +8,17 @@
     "name" : "Type",
     "eSuperTypes" : [ {
       "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-      "$ref" : "https://strumenta.com/kolasu/v2#//ASTNode"
+      "$ref" : "https://strumenta.com/starlasu/v2#//ASTNode"
     } ]
   }, {
     "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
     "name" : "Feature",
     "eSuperTypes" : [ {
       "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-      "$ref" : "https://strumenta.com/kolasu/v2#//ASTNode"
+      "$ref" : "https://strumenta.com/starlasu/v2#//ASTNode"
     }, {
       "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-      "$ref" : "https://strumenta.com/kolasu/v2#//PossiblyNamed"
+      "$ref" : "https://strumenta.com/starlasu/v2#//PossiblyNamed"
     } ],
     "eStructuralFeatures" : [ {
       "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
@@ -34,10 +34,10 @@
     "name" : "Entity",
     "eSuperTypes" : [ {
       "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-      "$ref" : "https://strumenta.com/kolasu/v2#//ASTNode"
+      "$ref" : "https://strumenta.com/starlasu/v2#//ASTNode"
     }, {
       "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-      "$ref" : "https://strumenta.com/kolasu/v2#//PossiblyNamed"
+      "$ref" : "https://strumenta.com/starlasu/v2#//PossiblyNamed"
     } ],
     "eStructuralFeatures" : [ {
       "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
@@ -54,10 +54,10 @@
     "name" : "Module",
     "eSuperTypes" : [ {
       "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-      "$ref" : "https://strumenta.com/kolasu/v2#//ASTNode"
+      "$ref" : "https://strumenta.com/starlasu/v2#//ASTNode"
     }, {
       "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-      "$ref" : "https://strumenta.com/kolasu/v2#//PossiblyNamed"
+      "$ref" : "https://strumenta.com/starlasu/v2#//PossiblyNamed"
     } ],
     "eStructuralFeatures" : [ {
       "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
@@ -116,7 +116,7 @@
         } ],
         "eClassifier" : {
           "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-          "$ref" : "https://strumenta.com/kolasu/v2#//ReferenceByName"
+          "$ref" : "https://strumenta.com/starlasu/v2#//ReferenceByName"
         }
       },
       "containment" : true

@@ -16,17 +16,17 @@ class EntityParseTreeToAstTransformer(issues: MutableList<Issue> = mutableListOf
 
     private fun registerModuleMapping() {
         this.registerNodeFactory(AntlrEntityParser.ModuleContext::class) { ctx -> Module(name = ctx.name.text) }
-            .withChild(AntlrEntityParser.ModuleContext::entities, Module::entities)
+            .withChild(Module::entities, AntlrEntityParser.ModuleContext::entities,)
     }
 
     private fun registerEntityMapping() {
         this.registerNodeFactory(AntlrEntityParser.EntityContext::class) { ctx -> Entity(name = ctx.name.text) }
-            .withChild(AntlrEntityParser.EntityContext::features, Entity::features)
+            .withChild(Entity::features, AntlrEntityParser.EntityContext::features,)
     }
 
     private fun registerFeatureMapping() {
         this.registerNodeFactory(AntlrEntityParser.FeatureContext::class) { ctx -> Feature(name = ctx.name.text) }
-            .withChild(AntlrEntityParser.FeatureContext::type, Feature::type)
+            .withChild(Feature::type, AntlrEntityParser.FeatureContext::type,)
     }
 
     private fun registerTypeMappings() {
