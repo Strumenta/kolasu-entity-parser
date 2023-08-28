@@ -1,5 +1,5 @@
 {
-  "eClass" : "https://strumenta.com/kolasu/v2#//Result",
+  "eClass" : "https://strumenta.com/starlasu/v2#//Result",
   "root" : {
     "eClass" : "#//Module",
     "name" : "ExampleModule",

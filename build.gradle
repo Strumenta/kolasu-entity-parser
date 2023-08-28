@@ -3,7 +3,7 @@ plugins {
     id 'java-library'
     id 'antlr'
     id 'idea'
-    id "org.jlleitschuh.gradle.ktlint" version "10.1.0"
+    id "org.jlleitschuh.gradle.ktlint" version "11.5.0"
     id 'com.github.johnrengelman.shadow' version '7.0.0'
     id 'com.diffplug.spotless' version "6.4.2"
     id 'maven-publish'
