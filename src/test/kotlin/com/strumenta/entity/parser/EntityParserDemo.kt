@@ -2,6 +2,11 @@ package com.strumenta.entity.parser
 
 import com.andreapivetta.kolor.green
 import com.andreapivetta.kolor.yellow
+import com.strumenta.entity.parser.ast.Entity
+import com.strumenta.entity.parser.ast.Feature
+import com.strumenta.entity.parser.ast.Import
+import com.strumenta.entity.parser.ast.Module
+import com.strumenta.entity.parser.runtime.StringType
 import com.strumenta.kolasu.emf.saveMetamodel
 import com.strumenta.kolasu.emf.saveModel
 import com.strumenta.kolasu.model.Node
@@ -13,15 +18,7 @@ import com.strumenta.kolasu.serialization.computeIdsForReferencedNodes
 import com.strumenta.kolasu.testing.IgnoreChildren
 import com.strumenta.kolasu.testing.assertASTsAreEqual
 import com.strumenta.kolasu.testing.assertParsingResultsAreEqual
-import com.strumenta.kolasu.traversing.findAncestorOfType
-import com.strumenta.kolasu.traversing.findByPosition
-import com.strumenta.kolasu.traversing.searchByPosition
-import com.strumenta.kolasu.traversing.searchByType
-import com.strumenta.kolasu.traversing.walk
-import com.strumenta.kolasu.traversing.walkAncestors
-import com.strumenta.kolasu.traversing.walkChildren
-import com.strumenta.kolasu.traversing.walkDescendants
-import com.strumenta.kolasu.traversing.walkLeavesFirst
+import com.strumenta.kolasu.traversing.*
 import com.strumenta.kolasu.validation.Issue
 import com.strumenta.kolasu.validation.IssueSeverity
 import org.eclipse.emf.common.util.URI
@@ -30,7 +27,7 @@ import java.io.File
 import kotlin.io.path.Path
 
 @Suppress("UNCHECKED_CAST")
-internal class EntityParserTest {
+internal class EntityParserDemo {
 
     private val parser: EntityParser = EntityParser()
 
@@ -67,10 +64,6 @@ internal class EntityParserTest {
                 is Feature -> {
                     println("Name: ".green() + node.name)
                     println("Type: ".green() + node.type)
-                }
-
-                is EntityRefType -> {
-                    println("Target: ".green() + node.target)
                 }
             }
             println()
@@ -124,8 +117,6 @@ internal class EntityParserTest {
         println("${secondEntityNameFeature.findAncestorOfType(klass = Module::class.java)}".yellow())
         // Retrieve the nearest Entity ancestor from Demo::SecondEntity::name -> SecondEntity
         println("${secondEntityNameFeature.findAncestorOfType(klass = Entity::class.java)}".yellow())
-        // Retrieve the nearest Type ancestor from Demo::SecondEntity::name -> null
-        println("${secondEntityNameFeature.findAncestorOfType(klass = Type::class.java)}".yellow())
     }
 
     @Test
@@ -139,9 +130,6 @@ internal class EntityParserTest {
         // Retrieve all Feature instances from Demo
         module().searchByType(klass = Feature::class.java, walker = Node::walk)
             .forEachIndexed { index, node -> println("$index: $node".yellow()) }
-        // Retrieve all Type instances from Demo
-        module().searchByType(klass = Type::class.java, walker = Node::walk)
-            .forEachIndexed { index, node -> println("$index: $node".yellow()) }
     }
 
     @Test
@@ -153,10 +141,10 @@ internal class EntityParserTest {
         println(
             "${
             module.findByPosition(
-                position = module.entities[1].features[0].type!!.position!!,
-                selfContained = true
+                position = module.entities[1].features[0].position!!,
+                selfContained = true,
             )
-            }".yellow()
+            }".yellow(),
         )
     }
 
@@ -174,24 +162,22 @@ internal class EntityParserTest {
     fun testingSupportAssertASTsAreEqual() {
         assertASTsAreEqual(
             Module(
-                name = "Demo",
-                entities = listOf(
+                name = "demo",
+                imports = mutableListOf(
+                    Import(module = ReferenceByName("external"))
+                ),
+                entities = mutableListOf(
                     Entity(
                         name = "FirstEntity",
-                        features = IgnoreChildren()
+                        features = IgnoreChildren(),
                     ),
                     Entity(
                         name = "SecondEntity",
-                        features = listOf(
-                            Feature(
-                                name = "name",
-                                type = StringType()
-                            )
-                        )
-                    )
-                )
+                        features = IgnoreChildren(),
+                    ),
+                ),
             ),
-            module()
+            module(),
         )
     }
 
@@ -199,39 +185,39 @@ internal class EntityParserTest {
     fun testingSupportAssertParsingResultsAreEqualSyntactic() {
         val actualParsingResult = parser.parse(
             """
-                module ExampleModule {
-                    entity ExampleEntity {
-                        name: string;
-                    }
-            """.trimIndent()
+                module theModule
+                
+                entity theEntity {
+                    theFeature: String
+            """.trimIndent(),
         ) as ParsingResult<Module>
         val expectedParsingResult = ParsingResult(
             issues = listOf(
                 Issue.syntactic(
-                    message = "extraneous input '<EOF>' expecting {'entity', '}'}",
+                    message = "extraneous input '<EOF>' expecting {'}', ID}",
                     severity = IssueSeverity.ERROR,
-                    position = pos(4, 5, 4, 5)
+                    position = pos(4, 22, 4, 22),
                 ),
                 Issue.syntactic(
-                    message = "Error node found (token: <missing '}'>)",
+                    message = "Recognition exception: null",
                     severity = IssueSeverity.ERROR,
-                    position = pos(4, 4, 4, 17)
-                )
+                    position = pos(3, 0, 4, 22),
+                ),
             ),
             root = Module(
-                name = "ExampleModule",
-                entities = listOf(
+                name = "theModule",
+                entities = mutableListOf(
                     Entity(
-                        name = "ExampleEntity",
-                        features = listOf(
+                        name = "theEntity",
+                        features = mutableListOf(
                             Feature(
-                                name = "name",
-                                type = StringType()
+                                name = "theFeature",
+                                type = ReferenceByName(name = "String", initialReferred = StringType)
                             )
                         )
-                    )
-                )
-            )
+                    ),
+                ),
+            ),
         )
         assertParsingResultsAreEqual(expectedParsingResult, actualParsingResult)
     }
@@ -240,35 +226,29 @@ internal class EntityParserTest {
     fun testingSupportAssertParsingResultsAreEqualSemantic() {
         val actualParsingResult = parser.parse(
             """
-                module ExampleModule {
-                    entity ExampleEntity {
-                        target: NotExistingEntity;
-                    }
+                module ExampleModule
+                
+                entity ExampleEntity {
+                    target: NotExistingEntity
                 }
-            """.trimIndent()
+            """.trimIndent(),
         ) as ParsingResult<Module>
         val expectedParsingResult = ParsingResult(
-            issues = listOf(
-                Issue.semantic(
-                    message = "Entity NotExistingEntity not found",
-                    severity = IssueSeverity.ERROR,
-                    position = pos(3, 16, 3, 33)
-                )
-            ),
+            issues = listOf(),
             root = Module(
                 name = "ExampleModule",
-                entities = listOf(
+                entities = mutableListOf(
                     Entity(
                         name = "ExampleEntity",
-                        features = listOf(
+                        features = mutableListOf(
                             Feature(
                                 name = "target",
-                                type = EntityRefType(target = ReferenceByName(name = "NotExistingEntity"))
-                            )
-                        )
-                    )
-                )
-            )
+                                type = ReferenceByName(name = "NotExistingEntity", initialReferred = null)
+                            ),
+                        ),
+                    ),
+                ),
+            ),
         )
         assertParsingResultsAreEqual(expectedParsingResult, actualParsingResult)
     }
@@ -285,11 +265,11 @@ internal class EntityParserTest {
                 }
             }
             """.trimIndent(),
-            considerPosition = false
+            considerPosition = false,
         ).saveModel(
             metamodel,
             URI.createFileURI(Path("src/test/resources/model.json").toString()),
-            includeMetamodel = false
+            includeMetamodel = false,
         )
     }
 
@@ -299,20 +279,23 @@ internal class EntityParserTest {
         JsonGenerator().generateFile(
             root = module,
             file = File("src/test/resources/model-native.json"),
-            withIds = module.computeIdsForReferencedNodes()
+            withIds = module.computeIdsForReferencedNodes(),
         )
     }
 
     private fun module(): Module {
         val input = """
-            module Demo {
-                entity FirstEntity {
-                    name: string;
-                    second: SecondEntity;
-                }
-                entity SecondEntity {
-                    name: string;
-                }
+            module demo
+            
+            import external
+            
+            entity FirstEntity {
+                name: String
+                second: SecondEntity
+            }
+            
+            entity SecondEntity {
+                name: String
             }
         """.trimIndent()
         val ast = this.parser.parse(input) // parse code and build AST

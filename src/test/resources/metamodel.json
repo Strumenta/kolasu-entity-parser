@@ -1,112 +1,22 @@
 {
   "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EPackage",
-  "name" : "com.strumenta.entity.parser",
+  "name" : "com.strumenta.entity.parser.ast",
   "nsURI" : "https://strumenta.com/entity",
   "nsPrefix" : "entity",
   "eClassifiers" : [ {
     "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-    "name" : "Type",
-    "eSuperTypes" : [ {
-      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-      "$ref" : "https://strumenta.com/starlasu/v2#//ASTNode"
-    } ]
-  }, {
-    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-    "name" : "Feature",
+    "name" : "Symbol",
+    "abstract" : true,
     "eSuperTypes" : [ {
       "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
       "$ref" : "https://strumenta.com/starlasu/v2#//ASTNode"
     }, {
       "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-      "$ref" : "https://strumenta.com/starlasu/v2#//PossiblyNamed"
+      "$ref" : "https://strumenta.com/starlasu/v2#//Named"
     } ],
     "eStructuralFeatures" : [ {
       "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
       "name" : "type",
-      "eType" : {
-        "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-        "$ref" : "//Type"
-      },
-      "containment" : true
-    } ]
-  }, {
-    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-    "name" : "Entity",
-    "eSuperTypes" : [ {
-      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-      "$ref" : "https://strumenta.com/starlasu/v2#//ASTNode"
-    }, {
-      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-      "$ref" : "https://strumenta.com/starlasu/v2#//PossiblyNamed"
-    } ],
-    "eStructuralFeatures" : [ {
-      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
-      "name" : "features",
-      "upperBound" : -1,
-      "eType" : {
-        "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-        "$ref" : "//Feature"
-      },
-      "containment" : true
-    } ]
-  }, {
-    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-    "name" : "Module",
-    "eSuperTypes" : [ {
-      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-      "$ref" : "https://strumenta.com/starlasu/v2#//ASTNode"
-    }, {
-      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-      "$ref" : "https://strumenta.com/starlasu/v2#//PossiblyNamed"
-    } ],
-    "eStructuralFeatures" : [ {
-      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
-      "name" : "entities",
-      "upperBound" : -1,
-      "eType" : {
-        "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-        "$ref" : "//Entity"
-      },
-      "containment" : true
-    } ]
-  }, {
-    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-    "name" : "PrimitiveType",
-    "eSuperTypes" : [ {
-      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-      "$ref" : "//Type"
-    } ]
-  }, {
-    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-    "name" : "StringType",
-    "eSuperTypes" : [ {
-      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-      "$ref" : "//PrimitiveType"
-    } ]
-  }, {
-    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-    "name" : "IntegerType",
-    "eSuperTypes" : [ {
-      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-      "$ref" : "//PrimitiveType"
-    } ]
-  }, {
-    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-    "name" : "BooleanType",
-    "eSuperTypes" : [ {
-      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-      "$ref" : "//PrimitiveType"
-    } ]
-  }, {
-    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-    "name" : "EntityRefType",
-    "eSuperTypes" : [ {
-      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
-      "$ref" : "//Type"
-    } ],
-    "eStructuralFeatures" : [ {
-      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
-      "name" : "target",
       "eGenericType" : {
         "eTypeArguments" : [ {
           "eClassifier" : {
@@ -118,6 +28,428 @@
           "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
           "$ref" : "https://strumenta.com/starlasu/v2#//ReferenceByName"
         }
+      },
+      "containment" : true
+    } ]
+  }, {
+    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+    "name" : "Variable",
+    "eSuperTypes" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+      "$ref" : "//Symbol"
+    } ]
+  }, {
+    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+    "name" : "Parameter",
+    "eSuperTypes" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+      "$ref" : "//Symbol"
+    } ]
+  }, {
+    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+    "name" : "Feature",
+    "eSuperTypes" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+      "$ref" : "//Symbol"
+    } ]
+  }, {
+    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+    "name" : "Statement",
+    "abstract" : true,
+    "eSuperTypes" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+      "$ref" : "https://strumenta.com/starlasu/v2#//ASTNode"
+    } ]
+  }, {
+    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+    "name" : "Expression",
+    "abstract" : true,
+    "eSuperTypes" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+      "$ref" : "https://strumenta.com/starlasu/v2#//ASTNode"
+    } ]
+  }, {
+    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+    "name" : "ReferenceExpression",
+    "eSuperTypes" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+      "$ref" : "//Expression"
+    } ],
+    "eStructuralFeatures" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
+      "name" : "context",
+      "eType" : {
+        "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+        "$ref" : "//Expression"
+      },
+      "containment" : true
+    }, {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
+      "name" : "target",
+      "eGenericType" : {
+        "eTypeArguments" : [ {
+          "eClassifier" : {
+            "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+            "$ref" : "//Symbol"
+          }
+        } ],
+        "eClassifier" : {
+          "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+          "$ref" : "https://strumenta.com/starlasu/v2#//ReferenceByName"
+        }
+      },
+      "containment" : true
+    } ]
+  }, {
+    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EEnum",
+    "name" : "Operator",
+    "eLiterals" : [ {
+      "name" : "ADDITION"
+    }, {
+      "name" : "SUBTRACTION",
+      "value" : 1
+    }, {
+      "name" : "MULTIPLICATION",
+      "value" : 2
+    }, {
+      "name" : "DIVISION",
+      "value" : 3
+    } ]
+  }, {
+    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+    "name" : "OperatorExpression",
+    "eSuperTypes" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+      "$ref" : "//Expression"
+    } ],
+    "eStructuralFeatures" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
+      "name" : "left",
+      "eType" : {
+        "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+        "$ref" : "//Expression"
+      },
+      "containment" : true
+    }, {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EAttribute",
+      "name" : "operator",
+      "lowerBound" : 1,
+      "eType" : {
+        "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EEnum",
+        "$ref" : "//Operator"
+      }
+    }, {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
+      "name" : "right",
+      "eType" : {
+        "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+        "$ref" : "//Expression"
+      },
+      "containment" : true
+    } ]
+  }, {
+    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+    "name" : "LiteralExpression",
+    "eSuperTypes" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+      "$ref" : "//Expression"
+    } ],
+    "eStructuralFeatures" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
+      "name" : "type",
+      "eGenericType" : {
+        "eTypeArguments" : [ {
+          "eClassifier" : {
+            "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+            "$ref" : "//Entity"
+          }
+        } ],
+        "eClassifier" : {
+          "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+          "$ref" : "https://strumenta.com/starlasu/v2#//ReferenceByName"
+        }
+      },
+      "containment" : true
+    }, {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EAttribute",
+      "name" : "value",
+      "lowerBound" : 1,
+      "eType" : {
+        "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EDataType",
+        "$ref" : "http://www.eclipse.org/emf/2002/Ecore#//EString"
+      }
+    } ]
+  }, {
+    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+    "name" : "OperationReference",
+    "eSuperTypes" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+      "$ref" : "https://strumenta.com/starlasu/v2#//ASTNode"
+    } ],
+    "eStructuralFeatures" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
+      "name" : "context",
+      "eType" : {
+        "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+        "$ref" : "//Expression"
+      },
+      "containment" : true
+    }, {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
+      "name" : "operation",
+      "eGenericType" : {
+        "eTypeArguments" : [ {
+          "eClassifier" : {
+            "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+            "$ref" : "//Operation"
+          }
+        } ],
+        "eClassifier" : {
+          "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+          "$ref" : "https://strumenta.com/starlasu/v2#//ReferenceByName"
+        }
+      },
+      "containment" : true
+    } ]
+  }, {
+    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+    "name" : "InvocationExpression",
+    "eSuperTypes" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+      "$ref" : "//Expression"
+    } ],
+    "eStructuralFeatures" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
+      "name" : "arguments",
+      "upperBound" : -1,
+      "eType" : {
+        "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+        "$ref" : "//Expression"
+      },
+      "containment" : true
+    }, {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
+      "name" : "operation",
+      "eType" : {
+        "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+        "$ref" : "//OperationReference"
+      },
+      "containment" : true
+    } ]
+  }, {
+    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+    "name" : "ConstructorExpression",
+    "eSuperTypes" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+      "$ref" : "//Expression"
+    } ],
+    "eStructuralFeatures" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
+      "name" : "arguments",
+      "upperBound" : -1,
+      "eType" : {
+        "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+        "$ref" : "//Expression"
+      },
+      "containment" : true
+    }, {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
+      "name" : "entity",
+      "eGenericType" : {
+        "eTypeArguments" : [ {
+          "eClassifier" : {
+            "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+            "$ref" : "//Entity"
+          }
+        } ],
+        "eClassifier" : {
+          "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+          "$ref" : "https://strumenta.com/starlasu/v2#//ReferenceByName"
+        }
+      },
+      "containment" : true
+    } ]
+  }, {
+    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+    "name" : "ReturnStatement",
+    "eSuperTypes" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+      "$ref" : "//Statement"
+    } ],
+    "eStructuralFeatures" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
+      "name" : "value",
+      "eType" : {
+        "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+        "$ref" : "//Expression"
+      },
+      "containment" : true
+    } ]
+  }, {
+    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+    "name" : "BindingStatement",
+    "eSuperTypes" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+      "$ref" : "//Statement"
+    } ],
+    "eStructuralFeatures" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
+      "name" : "value",
+      "eType" : {
+        "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+        "$ref" : "//Expression"
+      },
+      "containment" : true
+    }, {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
+      "name" : "variable",
+      "eType" : {
+        "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+        "$ref" : "//Variable"
+      },
+      "containment" : true
+    } ]
+  }, {
+    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+    "name" : "Operation",
+    "eSuperTypes" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+      "$ref" : "https://strumenta.com/starlasu/v2#//ASTNode"
+    }, {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+      "$ref" : "https://strumenta.com/starlasu/v2#//Named"
+    } ],
+    "eStructuralFeatures" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
+      "name" : "parameters",
+      "upperBound" : -1,
+      "eType" : {
+        "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+        "$ref" : "//Parameter"
+      },
+      "containment" : true
+    }, {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
+      "name" : "statements",
+      "upperBound" : -1,
+      "eType" : {
+        "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+        "$ref" : "//Statement"
+      },
+      "containment" : true
+    }, {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
+      "name" : "type",
+      "eGenericType" : {
+        "eTypeArguments" : [ {
+          "eClassifier" : {
+            "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+            "$ref" : "//Entity"
+          }
+        } ],
+        "eClassifier" : {
+          "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+          "$ref" : "https://strumenta.com/starlasu/v2#//ReferenceByName"
+        }
+      },
+      "containment" : true
+    } ]
+  }, {
+    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+    "name" : "Entity",
+    "eSuperTypes" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+      "$ref" : "https://strumenta.com/starlasu/v2#//ASTNode"
+    }, {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+      "$ref" : "https://strumenta.com/starlasu/v2#//Named"
+    } ],
+    "eStructuralFeatures" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
+      "name" : "features",
+      "upperBound" : -1,
+      "eType" : {
+        "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+        "$ref" : "//Feature"
+      },
+      "containment" : true
+    }, {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
+      "name" : "operations",
+      "upperBound" : -1,
+      "eType" : {
+        "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+        "$ref" : "//Operation"
+      },
+      "containment" : true
+    } ]
+  }, {
+    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+    "name" : "Import",
+    "eSuperTypes" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+      "$ref" : "https://strumenta.com/starlasu/v2#//ASTNode"
+    } ],
+    "eStructuralFeatures" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
+      "name" : "module",
+      "eGenericType" : {
+        "eTypeArguments" : [ {
+          "eClassifier" : {
+            "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+            "$ref" : "//Module"
+          }
+        } ],
+        "eClassifier" : {
+          "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+          "$ref" : "https://strumenta.com/starlasu/v2#//ReferenceByName"
+        }
+      },
+      "containment" : true
+    } ]
+  }, {
+    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+    "name" : "Module",
+    "eSuperTypes" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+      "$ref" : "https://strumenta.com/starlasu/v2#//ASTNode"
+    }, {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+      "$ref" : "https://strumenta.com/starlasu/v2#//Named"
+    } ],
+    "eStructuralFeatures" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
+      "name" : "entities",
+      "upperBound" : -1,
+      "eType" : {
+        "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+        "$ref" : "//Entity"
+      },
+      "containment" : true
+    }, {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
+      "name" : "imports",
+      "upperBound" : -1,
+      "eType" : {
+        "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+        "$ref" : "//Import"
+      },
+      "containment" : true
+    } ]
+  }, {
+    "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+    "name" : "Workspace",
+    "eSuperTypes" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+      "$ref" : "https://strumenta.com/starlasu/v2#//ASTNode"
+    } ],
+    "eStructuralFeatures" : [ {
+      "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EReference",
+      "name" : "modules",
+      "upperBound" : -1,
+      "eType" : {
+        "eClass" : "http://www.eclipse.org/emf/2002/Ecore#//EClass",
+        "$ref" : "//Module"
       },
       "containment" : true
     } ]

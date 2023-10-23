@@ -2,15 +2,20 @@
   "eClass" : "https://strumenta.com/starlasu/v2#//Result",
   "root" : {
     "eClass" : "#//Module",
-    "name" : "ExampleModule",
-    "entities" : [ {
-      "name" : "ExampleEntity",
-      "features" : [ {
-        "name" : "name",
-        "type" : {
-          "eClass" : "#//StringType"
-        }
-      } ]
-    } ]
-  }
+    "name" : "ExampleModule"
+  },
+  "issues" : [ {
+    "type" : "SYNTACTIC",
+    "message" : "The whole input was not consumed",
+    "position" : {
+      "start" : {
+        "line" : 1,
+        "column" : 22
+      },
+      "end" : {
+        "line" : 1,
+        "column" : 22
+      }
+    }
+  } ]
 }
